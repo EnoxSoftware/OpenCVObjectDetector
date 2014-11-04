@@ -26,12 +26,12 @@ public class ObjectDetectSample : MonoBehaviour
 		{
 
 				//Reads the cascade file to be used for object detection.
-				#if (UNITY_ANDROID||UNITY_IPHONE) && !UNITY_EDITOR
-		OpenCVObjectDetector.LoadCascade("haarcascade_frontalface_alt");
-		OpenCVObjectDetector.LoadCascade("haarcascade_mcs_lefteye");
-		OpenCVObjectDetector.LoadCascade("haarcascade_mcs_righteye");
-		OpenCVObjectDetector.LoadCascade("haarcascade_mcs_nose");
-		OpenCVObjectDetector.LoadCascade("haarcascade_mcs_mouth");
+				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
+		        OpenCVObjectDetector.LoadCascade("haarcascade_frontalface_alt");
+		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_lefteye");
+		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_righteye");
+		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_nose");
+		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_mouth");
 
 				#endif
 		
@@ -42,7 +42,7 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void Update ()
 		{
-				
+
 		}
 
 		/// <summary>
@@ -50,9 +50,9 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void OnDestroy ()
 		{
-				#if (UNITY_ANDROID||UNITY_IPHONE) && !UNITY_EDITOR
+				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
 		
-		OpenCVObjectDetector.UnloadAllCascade();
+		        OpenCVObjectDetector.UnloadAllCascade();
 		
 				#endif
 		}
@@ -63,12 +63,13 @@ public class ObjectDetectSample : MonoBehaviour
 		void OnGUI ()
 		{
 				if (GUI.Button (new Rect (10, 10, 200, 80), "Simple Faces Detect(Sync)")) {
-						Texture2D texture = (Texture2D)renderer.material.mainTexture;
+						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
 			
 			
 						IDictionary<string,object> param = new Dictionary<string,object> ();
+
 						//set OpenCV cvHaarDetectObjects() params.
 						param.Add ("filename", "haarcascade_frontalface_alt");
 						param.Add ("scaleFactor", 1.1);
@@ -85,10 +86,13 @@ public class ObjectDetectSample : MonoBehaviour
 						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
 
 						OpenCVObjectDetector.Detect (texture, gameObject.name, "SimpleFacesDetectCallback");
+
+
+
 				}
 
 				if (GUI.Button (new Rect (230, 10, 200, 80), "Simple Faces Detect(Async)")) {
-						Texture2D texture = (Texture2D)renderer.material.mainTexture;
+						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
 			
@@ -111,7 +115,7 @@ public class ObjectDetectSample : MonoBehaviour
 
 				if (GUI.Button (new Rect (10, 110, 200, 80), "Face Parts Detect(Async)")) {
 
-						Texture2D texture = (Texture2D)renderer.material.mainTexture;
+						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
 
@@ -129,15 +133,16 @@ public class ObjectDetectSample : MonoBehaviour
 						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
 			
 						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "DetectFacesCallback");
+
 				}
 
 				if (GUI.Button (new Rect (230, 110, 200, 80), "Change Picture")) {
 						textureIndex++;
 						if (textureIndex > textureArray.Length - 1)
 								textureIndex = 0;
-						renderer.material.mainTexture = textureArray [textureIndex];
+						GetComponent<Renderer> ().material.mainTexture = textureArray [textureIndex];
 
-						gameObject.transform.localScale = new Vector3 (renderer.material.mainTexture.width, renderer.material.mainTexture.height, 1);
+						gameObject.transform.localScale = new Vector3 (GetComponent<Renderer> ().material.mainTexture.width, GetComponent<Renderer> ().material.mainTexture.height, 1);
 				}
 		}
 
@@ -165,11 +170,11 @@ public class ObjectDetectSample : MonoBehaviour
 								IList<object> rects = (IList<object>)detects [detect.Key];
 
 								//flip Rects by convenient method,
-								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, ((Texture2D)renderer.material.mainTexture).width, ((Texture2D)renderer.material.mainTexture).height, 0);
+								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).width, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).height, 0);
 				
 				
-								#if (UNITY_ANDROID||UNITY_IPHONE) && !UNITY_EDITOR
-				OpenCVObjectDetector.DrawRects((Texture2D)renderer.material.mainTexture,Json.Serialize(flipRects),0,0,255,2);
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
+				OpenCVObjectDetector.DrawRects((Texture2D)GetComponent<Renderer>().material.mainTexture,Json.Serialize(flipRects),0,0,255,2);
 								#endif
 
 						}
@@ -184,7 +189,7 @@ public class ObjectDetectSample : MonoBehaviour
 		{
 				Debug.Log ("DetectFacesCallback result" + result);
 		
-				Texture2D texture = (Texture2D)renderer.material.mainTexture;
+				Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 		
 				string json = result;
 		
@@ -205,16 +210,13 @@ public class ObjectDetectSample : MonoBehaviour
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
 				
 				
-								#if (UNITY_ANDROID||UNITY_IPHONE) && !UNITY_EDITOR
-				OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),0,0,255,2);
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
+				                OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),0,0,255,2);
 								#endif
 				
 								OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
-				
-				
-				
-				
-				
+
+
 								int id = 0;
 								foreach (IDictionary rect in rects) {
 					
@@ -335,7 +337,7 @@ public class ObjectDetectSample : MonoBehaviour
 		{
 				Debug.Log ("DetectFacePartsCallback result" + result);
 		
-				Texture2D texture = (Texture2D)renderer.material.mainTexture;
+				Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 		
 				string json = result;
 		
@@ -380,8 +382,8 @@ public class ObjectDetectSample : MonoBehaviour
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
 				
-								#if (UNITY_ANDROID||UNITY_IPHONE) && !UNITY_EDITOR
-				OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),r,g,b,2);
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
+				                OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),r,g,b,2);
 								#endif
 						}
 				}
