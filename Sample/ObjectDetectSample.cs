@@ -20,6 +20,17 @@ public class ObjectDetectSample : MonoBehaviour
 		int textureIndex = 0;
 
 		/// <summary>
+		/// The result prefab.
+		/// </summary>
+		public GameObject resultPrefab;
+
+		/// <summary>
+		/// The result game object.
+		/// </summary>
+		IList<GameObject> resultGameObjects;
+	    
+
+		/// <summary>
 		/// Start this instance.
 		/// </summary>
 		void Start ()
@@ -34,7 +45,8 @@ public class ObjectDetectSample : MonoBehaviour
 		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_mouth");
 
 				#endif
-		
+
+				resultGameObjects = new List<GameObject> ();
 		}
 	
 		/// <summary>
@@ -42,6 +54,7 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void Update ()
 		{
+
 
 		}
 
@@ -143,6 +156,14 @@ public class ObjectDetectSample : MonoBehaviour
 						GetComponent<Renderer> ().material.mainTexture = textureArray [textureIndex];
 
 						gameObject.transform.localScale = new Vector3 (GetComponent<Renderer> ().material.mainTexture.width, GetComponent<Renderer> ().material.mainTexture.height, 1);
+
+			         
+						//Distroy resultGameObjects;
+						foreach (GameObject result in resultGameObjects) {
+								GameObject.Destroy (result);
+						}
+						resultGameObjects.Clear ();
+
 				}
 		}
 
@@ -169,6 +190,9 @@ public class ObjectDetectSample : MonoBehaviour
 				
 								IList<object> rects = (IList<object>)detects [detect.Key];
 
+
+				                
+
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).width, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).height, 0);
 				
@@ -176,6 +200,9 @@ public class ObjectDetectSample : MonoBehaviour
 								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
 				OpenCVObjectDetector.DrawRects((Texture2D)GetComponent<Renderer>().material.mainTexture,Json.Serialize(flipRects),0,0,255,2);
 								#endif
+
+
+								ResultRectsToResultGameObjects (flipRects, new Color (0.0f, 0.0f, 1.0f, 0.3f), -40);
 
 						}
 				}
@@ -213,6 +240,9 @@ public class ObjectDetectSample : MonoBehaviour
 								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
 				                OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),0,0,255,2);
 								#endif
+
+								ResultRectsToResultGameObjects (flipRects, new Color (0.0f, 0.0f, 1.0f, 0.3f), -40);
+
 				
 								OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
 
@@ -385,8 +415,71 @@ public class ObjectDetectSample : MonoBehaviour
 								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
 				                OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),r,g,b,2);
 								#endif
+
+								ResultRectsToResultGameObjects (flipRects, new Color ((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 0.3f), -80);
+
 						}
 				}
+		}
+
+		/// <summary>
+		/// Results the rects to result game objects.
+		/// </summary>
+		/// <param name="rects">Rects.</param>
+		/// <param name="color">Color.</param>
+		/// <param name="zPos">Z position.</param>
+		private void ResultRectsToResultGameObjects (IList<object> rects, Color color, float zPos)
+		{
+
+				Vector3[] resultPoints = new Vector3[rects.Count];
+
+
+
+				float textureWidth = GetComponent<Renderer> ().material.mainTexture.width;
+				float textureHeight = GetComponent<Renderer> ().material.mainTexture.height;
+
+				Matrix4x4 transCenterM = 
+			Matrix4x4.TRS (new Vector3 (-textureWidth / 2, -textureHeight / 2, 0), Quaternion.identity, new Vector3 (1, 1, 1));
+
+
+				Vector3 translation = new Vector3 (gameObject.transform.localPosition.x, gameObject.transform.localPosition.y, gameObject.transform.localPosition.z);
+
+				Quaternion rotation = 
+			Quaternion.Euler (gameObject.transform.localEulerAngles.x, gameObject.transform.localEulerAngles.y, gameObject.transform.localEulerAngles.z);
+
+				Vector3 scale = new Vector3 (gameObject.transform.localScale.x / textureWidth, gameObject.transform.localScale.y / textureHeight, 1);
+
+				Matrix4x4 trans2Dto3DM = 
+			Matrix4x4.TRS (translation, rotation, scale);
+
+
+				for (int i = 0; i < resultPoints.Length; i++) {
+						IDictionary rect = (IDictionary)rects [i];
+
+						//get center of rect.
+						resultPoints [i] = new Vector3 ((long)rect ["x"] + (long)rect ["width"] / 2, (long)rect ["y"] + (long)rect ["height"] / 2, 0);
+
+
+						//translate origin to center.
+						resultPoints [i] = transCenterM.MultiplyPoint3x4 (resultPoints [i]);
+
+						//transform from 2D to 3D
+						resultPoints [i] = trans2Dto3DM.MultiplyPoint3x4 (resultPoints [i]);
+
+
+						//Add resultGameObject.
+						GameObject result = Instantiate (resultPrefab, resultPoints [i], Quaternion.identity) as GameObject;
+						result.transform.parent = gameObject.transform;
+
+						result.transform.localPosition = new Vector3 (result.transform.localPosition.x, result.transform.localPosition.y, zPos);
+						result.transform.localEulerAngles = new Vector3 (0, 0, 0);
+						result.transform.localScale = new Vector3 ((long)rect ["width"] / textureWidth, (long)rect ["height"] / textureHeight, 20);
+
+						result.renderer.material.color = color;
+
+						resultGameObjects.Add (result);
+				}
+
 		}
 
 		
