@@ -75,7 +75,17 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void OnGUI ()
 		{
-				if (GUI.Button (new Rect (10, 10, 200, 80), "Simple Faces Detect(Sync)")) {
+		float screenScale = Screen.width / 240.0f;
+		Matrix4x4 scaledMatrix = Matrix4x4.Scale (new Vector3 (screenScale, screenScale, screenScale));
+		GUI.matrix = scaledMatrix;
+
+		GUILayout.BeginVertical ();
+		
+		if (GUILayout.Button ("Show License")) {
+						Application.LoadLevel ("ShowLicense");
+				}
+			
+		if (GUILayout.Button ( "Simple Faces Detect(Sync)")) {
 						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
@@ -104,7 +114,7 @@ public class ObjectDetectSample : MonoBehaviour
 
 				}
 
-				if (GUI.Button (new Rect (230, 10, 200, 80), "Simple Faces Detect(Async)")) {
+		if (GUILayout.Button ("Simple Faces Detect(Async)")) {
 						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
@@ -126,7 +136,7 @@ public class ObjectDetectSample : MonoBehaviour
 						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "SimpleFacesDetectCallback");
 				}
 
-				if (GUI.Button (new Rect (10, 110, 200, 80), "Face Parts Detect(Async)")) {
+		if (GUILayout.Button ("Face Parts Detect(Async)")) {
 
 						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
@@ -149,7 +159,7 @@ public class ObjectDetectSample : MonoBehaviour
 
 				}
 
-				if (GUI.Button (new Rect (230, 110, 200, 80), "Change Picture")) {
+		if (GUILayout.Button ( "Change Picture")) {
 						textureIndex++;
 						if (textureIndex > textureArray.Length - 1)
 								textureIndex = 0;
@@ -165,6 +175,8 @@ public class ObjectDetectSample : MonoBehaviour
 						resultGameObjects.Clear ();
 
 				}
+
+		GUILayout.EndVertical ();
 		}
 
 		/// <summary>
