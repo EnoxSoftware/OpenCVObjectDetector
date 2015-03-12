@@ -37,12 +37,12 @@ public class ObjectDetectSample : MonoBehaviour
 		{
 
 				//Reads the cascade file to be used for object detection.
-				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
-		        OpenCVObjectDetector.LoadCascade("haarcascade_frontalface_alt");
-		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_lefteye");
-		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_righteye");
-		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_nose");
-		        OpenCVObjectDetector.LoadCascade("haarcascade_mcs_mouth");
+				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+				OpenCVObjectDetector.LoadCascade ("haarcascade_frontalface_alt");
+				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_lefteye");
+				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_righteye");
+				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_nose");
+				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_mouth");
 
 				#endif
 
@@ -63,9 +63,9 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void OnDestroy ()
 		{
-				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
+				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
 		
-		        OpenCVObjectDetector.UnloadAllCascade();
+				OpenCVObjectDetector.UnloadAllCascade ();
 		
 				#endif
 		}
@@ -75,17 +75,17 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void OnGUI ()
 		{
-		float screenScale = Screen.width / 240.0f;
-		Matrix4x4 scaledMatrix = Matrix4x4.Scale (new Vector3 (screenScale, screenScale, screenScale));
-		GUI.matrix = scaledMatrix;
+				float screenScale = Screen.width / 240.0f;
+				Matrix4x4 scaledMatrix = Matrix4x4.Scale (new Vector3 (screenScale, screenScale, screenScale));
+				GUI.matrix = scaledMatrix;
 
-		GUILayout.BeginVertical ();
+				GUILayout.BeginVertical ();
 		
-		if (GUILayout.Button ("Show License")) {
+				if (GUILayout.Button ("Show License")) {
 						Application.LoadLevel ("ShowLicense");
 				}
 			
-		if (GUILayout.Button ( "Simple Faces Detect(Sync)")) {
+				if (GUILayout.Button ("Simple Faces Detect(Sync)")) {
 						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
@@ -114,7 +114,7 @@ public class ObjectDetectSample : MonoBehaviour
 
 				}
 
-		if (GUILayout.Button ("Simple Faces Detect(Async)")) {
+				if (GUILayout.Button ("Simple Faces Detect(Async)")) {
 						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
 						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
@@ -136,7 +136,7 @@ public class ObjectDetectSample : MonoBehaviour
 						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "SimpleFacesDetectCallback");
 				}
 
-		if (GUILayout.Button ("Face Parts Detect(Async)")) {
+				if (GUILayout.Button ("Face Parts Detect(Async)")) {
 
 						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
 
@@ -159,7 +159,7 @@ public class ObjectDetectSample : MonoBehaviour
 
 				}
 
-		if (GUILayout.Button ( "Change Picture")) {
+				if (GUILayout.Button ("Change Picture")) {
 						textureIndex++;
 						if (textureIndex > textureArray.Length - 1)
 								textureIndex = 0;
@@ -176,7 +176,7 @@ public class ObjectDetectSample : MonoBehaviour
 
 				}
 
-		GUILayout.EndVertical ();
+				GUILayout.EndVertical ();
 		}
 
 		/// <summary>
@@ -209,8 +209,8 @@ public class ObjectDetectSample : MonoBehaviour
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).width, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).height, 0);
 				
 				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
-				OpenCVObjectDetector.DrawRects((Texture2D)GetComponent<Renderer>().material.mainTexture,Json.Serialize(flipRects),0,0,255,2);
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+								OpenCVObjectDetector.DrawRects ((Texture2D)GetComponent<Renderer> ().material.mainTexture, Json.Serialize (flipRects), 0, 0, 255, 2);
 								#endif
 
 
@@ -249,8 +249,8 @@ public class ObjectDetectSample : MonoBehaviour
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
 				
 				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
-				                OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),0,0,255,2);
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+								OpenCVObjectDetector.DrawRects (texture, Json.Serialize (flipRects), 0, 0, 255, 2);
 								#endif
 
 								ResultRectsToResultGameObjects (flipRects, new Color (0.0f, 0.0f, 1.0f, 0.3f), -40);
@@ -424,8 +424,8 @@ public class ObjectDetectSample : MonoBehaviour
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
 				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR)
-				                OpenCVObjectDetector.DrawRects(texture,Json.Serialize(flipRects),r,g,b,2);
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+								OpenCVObjectDetector.DrawRects (texture, Json.Serialize (flipRects), r, g, b, 2);
 								#endif
 
 								ResultRectsToResultGameObjects (flipRects, new Color ((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 0.3f), -80);
@@ -487,7 +487,7 @@ public class ObjectDetectSample : MonoBehaviour
 						result.transform.localEulerAngles = new Vector3 (0, 0, 0);
 						result.transform.localScale = new Vector3 ((long)rect ["width"] / textureWidth, (long)rect ["height"] / textureHeight, 20);
 
-						result.renderer.material.color = color;
+						result.GetComponent<Renderer> ().material.color = color;
 
 						resultGameObjects.Add (result);
 				}
