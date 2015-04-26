@@ -20,6 +20,3 @@ Manual
 -----
 [ReadMe.pdf](ReadMe.pdf)
 
-API Reference
------
-<http://enoxsoftware.github.io/OpenCVForUnity/doc/html/index.html>
