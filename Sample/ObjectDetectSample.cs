@@ -37,7 +37,7 @@ public class ObjectDetectSample : MonoBehaviour
 		{
 
 				//Reads the cascade file to be used for object detection.
-				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 				OpenCVObjectDetector.LoadCascade ("haarcascade_frontalface_alt");
 				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_lefteye");
 				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_righteye");
@@ -63,7 +63,7 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void OnDestroy ()
 		{
-				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 		
 				OpenCVObjectDetector.UnloadAllCascade ();
 		
@@ -209,7 +209,7 @@ public class ObjectDetectSample : MonoBehaviour
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).width, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).height, 0);
 				
 				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 								OpenCVObjectDetector.DrawRects ((Texture2D)GetComponent<Renderer> ().material.mainTexture, Json.Serialize (flipRects), 0, 0, 255, 2);
 								#endif
 
@@ -249,7 +249,7 @@ public class ObjectDetectSample : MonoBehaviour
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
 				
 				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 								OpenCVObjectDetector.DrawRects (texture, Json.Serialize (flipRects), 0, 0, 255, 2);
 								#endif
 
@@ -424,7 +424,7 @@ public class ObjectDetectSample : MonoBehaviour
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
 				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IPHONE) && !UNITY_EDITOR) || !(UNITY_4_5 || UNITY_4_6)
+								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 								OpenCVObjectDetector.DrawRects (texture, Json.Serialize (flipRects), r, g, b, 2);
 								#endif
 
