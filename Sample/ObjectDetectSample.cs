@@ -37,14 +37,11 @@ public class ObjectDetectSample : MonoBehaviour
 		{
 
 				//Reads the cascade file to be used for object detection.
-				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 				OpenCVObjectDetector.LoadCascade ("haarcascade_frontalface_alt");
 				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_lefteye");
 				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_righteye");
 				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_nose");
 				OpenCVObjectDetector.LoadCascade ("haarcascade_mcs_mouth");
-
-				#endif
 
 				resultGameObjects = new List<GameObject> ();
 		}
@@ -63,122 +60,213 @@ public class ObjectDetectSample : MonoBehaviour
 		/// </summary>
 		void OnDestroy ()
 		{
-				#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
 		
 				OpenCVObjectDetector.UnloadAllCascade ();
-		
-				#endif
 		}
 
-		/// <summary>
-		/// Raises the GU event.
-		/// </summary>
-		void OnGUI ()
+//		/// <summary>
+//		/// Raises the GU event.
+//		/// </summary>
+//		void OnGUI ()
+//		{
+//				float screenScale = Screen.width / 240.0f;
+//				Matrix4x4 scaledMatrix = Matrix4x4.Scale (new Vector3 (screenScale, screenScale, screenScale));
+//				GUI.matrix = scaledMatrix;
+//
+//				GUILayout.BeginVertical ();
+//		
+//				if (GUILayout.Button ("Show License")) {
+//						Application.LoadLevel ("ShowLicense");
+//				}
+//			
+//				if (GUILayout.Button ("Simple Faces Detect(Sync)")) {
+//						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
+//
+//						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
+//			
+//			
+//						IDictionary<string,object> param = new Dictionary<string,object> ();
+//
+//						//set OpenCV cvHaarDetectObjects() params.
+//						param.Add ("filename", "haarcascade_frontalface_alt");
+//						param.Add ("scaleFactor", 1.1);
+//						param.Add ("minNeighbors", 2);
+//						param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
+//						param.Add ("minWidth", 80);
+//						param.Add ("minHeight", 80);
+//
+//						//flip the image in Detect(), because Color32[] that GetPixels32() of Texture2D return is bottom-left origin.
+//						param.Add ("flipCode", 0);
+//
+//						Debug.Log ("Simple Faces Detect(Sync) param " + Json.Serialize (param));
+//			
+//						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
+//
+//						OpenCVObjectDetector.Detect (texture, gameObject.name, "SimpleFacesDetectCallback");
+//
+//
+//
+//				}
+//
+//				if (GUILayout.Button ("Simple Faces Detect(Async)")) {
+//						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
+//
+//						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
+//			
+//			
+//						IDictionary<string,object> param = new Dictionary<string,object> ();
+//						param.Add ("filename", "haarcascade_frontalface_alt");
+//						param.Add ("scaleFactor", 1.1);
+//						param.Add ("minNeighbors", 2);
+//						param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
+//						param.Add ("minWidth", 80);
+//						param.Add ("minHeight", 80);
+//						param.Add ("flipCode", 0);
+//
+//						Debug.Log ("Simple Faces Detect(Async) param " + Json.Serialize (param));
+//			
+//						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
+//			
+//						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "SimpleFacesDetectCallback");
+//				}
+//
+//				if (GUILayout.Button ("Face Parts Detect(Async)")) {
+//
+//						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
+//
+//						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
+//
+//						Dictionary<string,object> param = new Dictionary<string,object> ();
+//						param.Add ("filename", "haarcascade_frontalface_alt");
+//						param.Add ("scaleFactor", 1.1);
+//						param.Add ("minNeighbors", 2);
+//						param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
+//						param.Add ("minWidth", texture.width / 20);
+//						param.Add ("minHeight", texture.height / 20);
+//						param.Add ("flipCode", 0);
+//
+//						Debug.Log ("Face Parts Detect(Async) param " + Json.Serialize (param));
+//			
+//						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
+//			
+//						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "DetectFacesCallback");
+//
+//				}
+//
+//				if (GUILayout.Button ("Change Picture")) {
+//						textureIndex++;
+//						if (textureIndex > textureArray.Length - 1)
+//								textureIndex = 0;
+//						GetComponent<Renderer> ().material.mainTexture = textureArray [textureIndex];
+//
+//						gameObject.transform.localScale = new Vector3 (GetComponent<Renderer> ().material.mainTexture.width, GetComponent<Renderer> ().material.mainTexture.height, 1);
+//
+//			         
+//						//Distroy resultGameObjects;
+//						foreach (GameObject result in resultGameObjects) {
+//								GameObject.Destroy (result);
+//						}
+//						resultGameObjects.Clear ();
+//
+//				}
+//
+//				GUILayout.EndVertical ();
+//		}
+
+		public void OnShowLicenseButton ()
 		{
-				float screenScale = Screen.width / 240.0f;
-				Matrix4x4 scaledMatrix = Matrix4x4.Scale (new Vector3 (screenScale, screenScale, screenScale));
-				GUI.matrix = scaledMatrix;
-
-				GUILayout.BeginVertical ();
-		
-				if (GUILayout.Button ("Show License")) {
-						Application.LoadLevel ("ShowLicense");
-				}
-			
-				if (GUILayout.Button ("Simple Faces Detect(Sync)")) {
-						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
-
-						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
-			
-			
-						IDictionary<string,object> param = new Dictionary<string,object> ();
-
-						//set OpenCV cvHaarDetectObjects() params.
-						param.Add ("filename", "haarcascade_frontalface_alt");
-						param.Add ("scaleFactor", 1.1);
-						param.Add ("minNeighbors", 2);
-						param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
-						param.Add ("minWidth", 80);
-						param.Add ("minHeight", 80);
-
-						//flip the image in Detect(), because Color32[] that GetPixels32() of Texture2D return is bottom-left origin.
-						param.Add ("flipCode", 0);
-
-						Debug.Log ("Simple Faces Detect(Sync) param " + Json.Serialize (param));
-			
-						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
-
-						OpenCVObjectDetector.Detect (texture, gameObject.name, "SimpleFacesDetectCallback");
-
-
-
-				}
-
-				if (GUILayout.Button ("Simple Faces Detect(Async)")) {
-						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
-
-						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
-			
-			
-						IDictionary<string,object> param = new Dictionary<string,object> ();
-						param.Add ("filename", "haarcascade_frontalface_alt");
-						param.Add ("scaleFactor", 1.1);
-						param.Add ("minNeighbors", 2);
-						param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
-						param.Add ("minWidth", 80);
-						param.Add ("minHeight", 80);
-						param.Add ("flipCode", 0);
-
-						Debug.Log ("Simple Faces Detect(Async) param " + Json.Serialize (param));
-			
-						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
-			
-						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "SimpleFacesDetectCallback");
-				}
-
-				if (GUILayout.Button ("Face Parts Detect(Async)")) {
-
-						Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
-
-						OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
-
-						Dictionary<string,object> param = new Dictionary<string,object> ();
-						param.Add ("filename", "haarcascade_frontalface_alt");
-						param.Add ("scaleFactor", 1.1);
-						param.Add ("minNeighbors", 2);
-						param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
-						param.Add ("minWidth", texture.width / 20);
-						param.Add ("minHeight", texture.height / 20);
-						param.Add ("flipCode", 0);
-
-						Debug.Log ("Face Parts Detect(Async) param " + Json.Serialize (param));
-			
-						OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
-			
-						OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "DetectFacesCallback");
-
-				}
-
-				if (GUILayout.Button ("Change Picture")) {
-						textureIndex++;
-						if (textureIndex > textureArray.Length - 1)
-								textureIndex = 0;
-						GetComponent<Renderer> ().material.mainTexture = textureArray [textureIndex];
-
-						gameObject.transform.localScale = new Vector3 (GetComponent<Renderer> ().material.mainTexture.width, GetComponent<Renderer> ().material.mainTexture.height, 1);
-
-			         
-						//Distroy resultGameObjects;
-						foreach (GameObject result in resultGameObjects) {
-								GameObject.Destroy (result);
-						}
-						resultGameObjects.Clear ();
-
-				}
-
-				GUILayout.EndVertical ();
+				Application.LoadLevel ("ShowLicense");
 		}
 
+		public void OnSyncSimpleFacesDetectButton ()
+		{
+				Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
+		
+				OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
+		
+		
+				IDictionary<string,object> param = new Dictionary<string,object> ();
+		
+				//set OpenCV cvHaarDetectObjects() params.
+				param.Add ("filename", "haarcascade_frontalface_alt");
+				param.Add ("scaleFactor", 1.1);
+				param.Add ("minNeighbors", 2);
+				param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
+				param.Add ("minWidth", 80);
+				param.Add ("minHeight", 80);
+		
+				//flip the image in Detect(), because Color32[] that GetPixels32() of Texture2D return is bottom-left origin.
+				param.Add ("flipCode", 0);
+		
+				Debug.Log ("Simple Faces Detect(Sync) param " + Json.Serialize (param));
+		
+				OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
+		
+				OpenCVObjectDetector.Detect (texture, gameObject.name, "SimpleFacesDetectCallback");
+		}
+	
+		public void OnAsyncSimpleFacesDetectButton ()
+		{
+				Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
+		
+				OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
+		
+		
+				IDictionary<string,object> param = new Dictionary<string,object> ();
+				param.Add ("filename", "haarcascade_frontalface_alt");
+				param.Add ("scaleFactor", 1.1);
+				param.Add ("minNeighbors", 2);
+				param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
+				param.Add ("minWidth", 80);
+				param.Add ("minHeight", 80);
+				param.Add ("flipCode", 0);
+		
+				Debug.Log ("Simple Faces Detect(Async) param " + Json.Serialize (param));
+		
+				OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
+		
+				OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "SimpleFacesDetectCallback");
+		}
+	
+		public void OnAsyncFacePartsDetectButton ()
+		{
+				Texture2D texture = (Texture2D)GetComponent<Renderer> ().material.mainTexture;
+		
+				OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
+		
+				Dictionary<string,object> param = new Dictionary<string,object> ();
+				param.Add ("filename", "haarcascade_frontalface_alt");
+				param.Add ("scaleFactor", 1.1);
+				param.Add ("minNeighbors", 2);
+				param.Add ("flags", 0 | OpenCVObjectDetector.CV_HAAR_SCALE_IMAGE);
+				param.Add ("minWidth", texture.width / 20);
+				param.Add ("minHeight", texture.height / 20);
+				param.Add ("flipCode", 0);
+		
+				Debug.Log ("Face Parts Detect(Async) param " + Json.Serialize (param));
+		
+				OpenCVObjectDetector.AddObjectDetectorParam (Json.Serialize (param));
+		
+				OpenCVObjectDetector.DetectAsync (texture, gameObject.name, "DetectFacesCallback");
+		}
+	
+		public void OnChangePictureButton ()
+		{
+				textureIndex++;
+				if (textureIndex > textureArray.Length - 1)
+						textureIndex = 0;
+				GetComponent<Renderer> ().material.mainTexture = textureArray [textureIndex];
+		
+				gameObject.transform.localScale = new Vector3 (GetComponent<Renderer> ().material.mainTexture.width, GetComponent<Renderer> ().material.mainTexture.height, 1);
+		
+		
+				//Distroy resultGameObjects;
+				foreach (GameObject result in resultGameObjects) {
+						GameObject.Destroy (result);
+				}
+				resultGameObjects.Clear ();
+		}
+	
 		/// <summary>
 		/// Simples the faces detect callback.
 		/// </summary>
@@ -202,17 +290,10 @@ public class ObjectDetectSample : MonoBehaviour
 				
 								IList<object> rects = (IList<object>)detects [detect.Key];
 
-
-				                
-
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).width, ((Texture2D)GetComponent<Renderer> ().material.mainTexture).height, 0);
-				
-				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
+								
 								OpenCVObjectDetector.DrawRects ((Texture2D)GetComponent<Renderer> ().material.mainTexture, Json.Serialize (flipRects), 0, 0, 255, 2);
-								#endif
-
 
 								ResultRectsToResultGameObjects (flipRects, new Color (0.0f, 0.0f, 1.0f, 0.3f), -40);
 
@@ -247,14 +328,10 @@ public class ObjectDetectSample : MonoBehaviour
 
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
-				
-				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
+
 								OpenCVObjectDetector.DrawRects (texture, Json.Serialize (flipRects), 0, 0, 255, 2);
-								#endif
 
 								ResultRectsToResultGameObjects (flipRects, new Color (0.0f, 0.0f, 1.0f, 0.3f), -40);
-
 				
 								OpenCVObjectDetector.RemoveAllObjectDetectorParam ();
 
@@ -423,10 +500,8 @@ public class ObjectDetectSample : MonoBehaviour
 
 								//flip Rects by convenient method,
 								IList<object> flipRects = OpenCVObjectDetector.FlipRects (rects, texture.width, texture.height, 0);
-				
-								#if UNITY_PRO_LICENSE || ((UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR) || UNITY_5
+
 								OpenCVObjectDetector.DrawRects (texture, Json.Serialize (flipRects), r, g, b, 2);
-								#endif
 
 								ResultRectsToResultGameObjects (flipRects, new Color ((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 0.3f), -80);
 
